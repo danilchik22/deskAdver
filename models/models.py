@@ -4,7 +4,6 @@ from sqlalchemy import (
     MetaData,
     UUID,
     Column,
-    URL,
     Table,
     BigInteger,
     Integer,
@@ -18,7 +17,40 @@ from datetime import datetime, timedelta
 
 metadata = MetaData()
 
-categories = Table(
+
+def time_over():
+    return datetime.utcnow + timedelta(days=30)
+
+
+role = Table(
+    "role",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("name", String, nullable=False),
+    Column("permissions", JSON),
+)
+user = Table(
+    "user",
+    metadata,
+    Column("id", UUID, primary_key=True),
+    Column("email", String, nullable=False),
+    Column("username", String, nullable=False),
+    Column("hashed_password", String, nullable=False),
+    Column("registered_at", TIMESTAMP, default=datetime.utcnow),
+    Column("role_id", Integer, ForeignKey(role.c.id)),
+    Column("is_active", Boolean, default=True, nullable=False),
+    Column("is_superuser", Boolean, default=False, nullable=False),
+    Column("is_verified", Boolean, default=False, nullable=False),
+)
+
+photo = Table(
+    "photo",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("url", String, nullable=False),
+)
+
+category = Table(
     "category",
     metadata,
     Column("id", Integer, primary_key=True),
@@ -26,46 +58,23 @@ categories = Table(
     Column("parent_id", Integer, default=0),
 )
 
-roles = Table(
-    "roles",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("name", String, nullable=False),
-    Column("permissions", JSON),
-)
-users = Table(
-    "user",
-    metadata,
-    Column("id", UUID, primary_key=True),
-    Column("email", String, nullable=False),
-    Column("username", String, nullable=False),
-    Column("password", String, nullable=False),
-    Column("registered_at", TIMESTAMP, default=datetime.utcnow),
-    Column("role_id", Integer, ForeignKey("roles.id")),
-)
 
-cities = Table(
+city = Table(
     "city",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False),
 )
 
-types_adv = Table(
+type_adv = Table(
     "type_adv",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False),
 )
 
-photos = Table(
-    "photo",
-    metadata,
-    Column("id", BigInteger, primary_key=True),
-    Column("url", URL, nullable=False),
-)
 
-advertisements = Table(
+advertisement = Table(
     "advertisement",
     metadata,
     Column("id", Integer, primary_key=True),
@@ -73,31 +82,31 @@ advertisements = Table(
     Column("text", TEXT),
     Column("date", TIMESTAMP, default=datetime.utcnow),
     Column("confirm", Integer, default=0),
-    Column("time_over", TIMESTAMP, default=datetime.utcnow + timedelta(days=30)),
+    Column("time_over", TIMESTAMP, default=time_over),
     Column("is_actual", Boolean, default=True),
+    Column("photo", Integer, ForeignKey(photo.c.id)),
+    Column("user", UUID, ForeignKey(user.c.id)),
+    Column("category", Integer, ForeignKey(category.c.id)),
+    Column("type_adv", Integer, ForeignKey(type_adv.c.id)),
+    Column("city", Integer, ForeignKey(city.c.id)),
     Column("price", Integer),
-    Column("id_user", UUID, ForeignKey=("users.id")),
-    Column("id_category", Integer, ForeignKey=("categories.id")),
-    Column("id_type_adv", Integer, ForeignKey=("types_adv.id")),
-    Column("id_city", Integer, ForeignKey=("cities.id")),
-    Column("id_photo", BigInteger, ForeignKey=("photos.id")),
 )
 
-comments = Table(
-    "comments",
+comment = Table(
+    "comment",
     metadata,
     Column("id", BigInteger, primary_key=True),
-    Column("id_adv", Integer, ForeignKey=("advertisements.id")),
-    Column("id_user", UUID, ForeignKey=("users.id")),
+    Column("id_adv", Integer, ForeignKey(advertisement.c.id)),
+    Column("id_user", UUID, ForeignKey(user.c.id)),
     Column("text", Text, nullable=False),
 )
 
-complaints = Table(
-    "comlaint",
+complaint = Table(
+    "complaint",
     metadata,
     Column("id", BigInteger, primary_key=True),
-    Column("id_adv", Integer, ForeignKey=("advertisements.id")),
-    Column("id_user", UUID, ForeignKey=("users.id")),
+    Column("id_adv", Integer, ForeignKey(advertisement.c.id)),
+    Column("id_user", UUID, ForeignKey(user.c.id)),
     Column("text", Text),
     Column("status", Integer, default=0),
 )

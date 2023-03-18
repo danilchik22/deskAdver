@@ -1,19 +1,28 @@
+import uuid
 from fastapi import FastAPI
+import fastapi_users
+
+from auth.auth import auth_backend
+from auth.database import User
+from auth.manager import get_user_manager
+from auth.schemas import UserCreate, UserRead
 
 
 app = FastAPI(title="Bulletin board")
 
-adv = [{"id": 1, "text": "sale!"}]
+fastapi_users = fastapi_users.FastAPIUsers[User, uuid.UUID](
+    get_user_manager,
+    [auth_backend],
+)
 
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["auth"],
+)
 
-@app.get("/")
-def hello(id: int):
-    obj = list(filter(lambda item: item.get("id") == id, adv))[0]
-    return f'{obj["text"]}'
-
-
-@app.post("/{id}")
-def hello_post(id: int, text: str):
-    obj = list(filter(lambda item: item.get("id") == id, adv))[0]
-    obj["text"] = text
-    return {"status": 200, "data": obj}
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix="/auth",
+    tags=["auth"],
+)
