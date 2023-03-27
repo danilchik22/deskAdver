@@ -21,11 +21,11 @@ app.include_router(
     tags=["auth"],
 )
 
-""" current_user = fastapi_users.current_user()
+current_user = fastapi_users.current_user()
 
 @app.post("/create_ad")
 def create_ad(user: User = Depends(current_user)):
-    return user """
+    return user
 
 
 app.include_router(router)

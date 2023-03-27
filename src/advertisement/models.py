@@ -67,6 +67,11 @@ advertisement = Table(
     Column("price", Integer),
 )
 
+
+class DeleteAdvertisementResponse(BaseModel):
+    deleted_ad_id: int
+
+
 comment = Table(
     "comment",
     metadata,

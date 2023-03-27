@@ -1,7 +1,12 @@
 from datetime import datetime
 from typing import Union
 from uuid import UUID
+from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import Depends
 from pydantic import BaseModel
+from sqlalchemy import Integer, and_, update
+from src.advertisement.models import advertisement
+from src.database import get_async_session
 
 
 class PhotoCreate(BaseModel):
@@ -70,6 +75,18 @@ class ComplaintCreate(BaseModel):
     id_user: int
     text: str
     status: int
+
+
+async def del_ad(ad_id: Integer, session: AsyncSession = Depends(get_async_session)) -> Union[Integer, None]:
+    query = update(advertisement).\
+        where(and_(advertisement.c.id == ad_id, advertisement.c.is_actual == True)).\
+        values(is_actual=False).\
+        returning(advertisement.c.id)
+    res = await session.execute(query)
+    await session.commit()
+    deleted_ad_row = res.fetchone()
+    if deleted_ad_row is not None:
+        return deleted_ad_row[0]
 
 
 def get_lst_of_dict_advertisement(lst):
