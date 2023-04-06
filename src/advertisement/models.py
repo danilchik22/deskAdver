@@ -15,10 +15,10 @@ from sqlalchemy import (
     Text,
 )
 
-from src.auth.models import user
+from src.auth.models import User
 from src.advertisement.utils import time_over
 
-metadata = MetaData()
+from src.database import metadata
 
 photo = Table(
     "photo",
@@ -60,7 +60,7 @@ advertisement = Table(
     Column("time_over", TIMESTAMP, default=time_over, nullable=False),
     Column("is_actual", Boolean, default=True, nullable=False),
     Column("photo_id", Integer, ForeignKey(photo.c.id)),
-    Column("user_id", UUID, ForeignKey(user.c.id), nullable=False),
+    Column("user_id", UUID, ForeignKey(User.id), nullable=False),
     Column("category_id", Integer, ForeignKey(category.c.id), nullable=False),
     Column("type_adv_id", Integer, ForeignKey(type_adv.c.id), nullable=False),
     Column("city_id", Integer, ForeignKey(city.c.id), nullable=False),
@@ -77,8 +77,9 @@ comment = Table(
     metadata,
     Column("id", BigInteger, primary_key=True),
     Column("id_adv", Integer, ForeignKey(advertisement.c.id), nullable=False),
-    Column("id_user", UUID, ForeignKey(user.c.id), nullable=False),
+    Column("id_user", UUID, ForeignKey(User.id), nullable=False),
     Column("text", Text, nullable=False),
+    Column("date", TIMESTAMP, default=datetime.utcnow, nullable=False),
 )
 
 complaint = Table(
@@ -86,7 +87,8 @@ complaint = Table(
     metadata,
     Column("id", BigInteger, primary_key=True),
     Column("id_adv", Integer, ForeignKey(advertisement.c.id), nullable=False),
-    Column("id_user", UUID, ForeignKey(user.c.id), nullable=False),
+    Column("id_user", UUID, ForeignKey(User.id), nullable=False),
     Column("text", Text),
     Column("status", Integer, default=0, nullable=False),
+    Column("date", TIMESTAMP, default=datetime.utcnow, nullable=False),
 )

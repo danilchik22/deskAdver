@@ -19,7 +19,7 @@ from datetime import datetime
 
 from src.database import Base
 
-metadata = MetaData()
+from src.database import metadata
 
 
 role = Table(

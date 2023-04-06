@@ -1,0 +1,189 @@
+INSERT INTO
+    public.category (id, name, parent_id)
+VALUES (1, 'Недвижимость', 0);
+
+INSERT INTO
+    public.category (id, name, parent_id)
+VALUES (2, 'Квартиры', 1);
+
+INSERT INTO public.city (id, name) VALUES (1, 'Barnaul');
+
+INSERT INTO public.city (id, name) VALUES (2, 'Moscow');
+
+INSERT INTO
+    public.role (id, name, permissions)
+VALUES (1, 'user', NULL);
+
+INSERT INTO
+    public.role (id, name, permissions)
+VALUES (2, 'admin', NULL);
+
+INSERT INTO public.type_adv (id, name) VALUES (1, 'куплю');
+
+INSERT INTO public.type_adv (id, name) VALUES (2, 'продам');
+
+INSERT INTO public.type_adv (id, name) VALUES (3, 'сниму');
+
+INSERT INTO
+    public."user" (
+        id,
+        email,
+        username,
+        hashed_password,
+        registered_at,
+        role_id,
+        is_active,
+        is_superuser,
+        is_verified
+    )
+VALUES (
+        'f06b16b6-fd05-48b5-8837-534b66971486',
+        'amin@mail.ru',
+        'string',
+        '$2b$12$9Xr1kAe15MJZOZ5I436ufeDoOKVDYhri84pq9mS.s5iK1dcA/ziEe',
+        '2023-04-05 16:41:26.385106',
+        1,
+        true,
+        false,
+        false
+    );
+
+INSERT INTO
+    public."user" (
+        id,
+        email,
+        username,
+        hashed_password,
+        registered_at,
+        role_id,
+        is_active,
+        is_superuser,
+        is_verified
+    )
+VALUES (
+        '5154458d-9fe8-43b5-b2cf-441c05fd0892',
+        'dd@mail.ru',
+        'string',
+        '$2b$12$X.3fdImbfTIaNK9FWeGV/OT1hnlVFwwc0ma/EWFnxW5dpBGAQq7wW',
+        '2023-04-05 16:41:45.500013',
+        1,
+        true,
+        false,
+        false
+    );
+
+INSERT INTO
+    public."user" (
+        id,
+        email,
+        username,
+        hashed_password,
+        registered_at,
+        role_id,
+        is_active,
+        is_superuser,
+        is_verified
+    )
+VALUES (
+        '28e844bd-38f6-473b-b4c0-b3f1d28fb81f',
+        'admin@mail.ru',
+        'string',
+        '$2b$12$fxY7UbdI8289fcy5JZQBf.RYIQrwmV8djo/.OQYJFTrv6xGTk7Nhu',
+        '2023-04-05 16:40:55.978118',
+        1,
+        true,
+        true,
+        false
+    );
+
+INSERT INTO
+    public.advertisement (
+        id,
+        title,
+        text,
+        date,
+        confirm,
+        time_over,
+        is_actual,
+        photo_id,
+        user_id,
+        category_id,
+        type_adv_id,
+        city_id,
+        price
+    )
+VALUES (
+        1,
+        'Продам квартиру',
+        'Отличная в хрущевке',
+        '2023-04-05 16:46:20.304514',
+        0,
+        '2023-05-05 16:46:20.304527',
+        true,
+        NULL,
+        '28e844bd-38f6-473b-b4c0-b3f1d28fb81f',
+        2,
+        1,
+        1,
+        2334334
+    );
+
+INSERT INTO
+    public.advertisement (
+        id,
+        title,
+        text,
+        date,
+        confirm,
+        time_over,
+        is_actual,
+        photo_id,
+        user_id,
+        category_id,
+        type_adv_id,
+        city_id,
+        price
+    )
+VALUES (
+        2,
+        'Продам квартиру',
+        'Не очень',
+        '2023-04-05 16:46:52.292099',
+        0,
+        '2023-05-05 16:46:52.292111',
+        true,
+        NULL,
+        '28e844bd-38f6-473b-b4c0-b3f1d28fb81f',
+        2,
+        1,
+        1,
+        2332
+    );
+
+INSERT INTO
+    public.comment (id, id_adv, id_user, text, date)
+VALUES (
+        1,
+        1,
+        '5154458d-9fe8-43b5-b2cf-441c05fd0892',
+        'так себе',
+        '2023-04-05 16:48:12.938'
+    );
+
+INSERT INTO
+    public.complaint (
+        id,
+        id_adv,
+        id_user,
+        text,
+        status,
+        date
+    )
+VALUES (
+        0,
+        1,
+        '5154458d-9fe8-43b5-b2cf-441c05fd0892',
+        'string',
+        0,
+        '2023-04-05 16:51:30.097'
+    );
